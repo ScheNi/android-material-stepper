@@ -165,6 +165,23 @@ public class TabsContainer extends FrameLayout {
         }
     }
 
+    public void updateSteps(int currentStepPosition, SparseArray<Boolean> stepEnterValid, SparseArray<VerificationError> stepErrors) {
+        int size = mStepViewModels.size();
+        for (int i = 0; i < size; i++) {
+            StepTab childTab = (StepTab) mTabsInnerContainer.getChildAt(i);
+            boolean hasBeenValidatedAndNotCurrentStep = stepEnterValid.get(i) != null && currentStepPosition != i;
+            boolean done = hasBeenValidatedAndNotCurrentStep && stepEnterValid.get(i);
+            final boolean current = i == currentStepPosition;
+            VerificationError error = stepErrors.get(i);
+            if(hasBeenValidatedAndNotCurrentStep && !done && error == null) error = new VerificationError(null);
+
+            childTab.updateState(error, done, current, false);
+            if (current) {
+                mTabsScrollView.smoothScrollTo(childTab.getLeft() - mContainerLateralPadding, 0);
+            }
+        }
+    }
+
     private View createStepTab(final int position, @NonNull StepViewModel stepViewModel) {
         StepTab view = (StepTab) LayoutInflater.from(getContext()).inflate(R.layout.ms_step_tab_container, mTabsInnerContainer, false);
         view.setStepNumber(String.valueOf(position + 1));

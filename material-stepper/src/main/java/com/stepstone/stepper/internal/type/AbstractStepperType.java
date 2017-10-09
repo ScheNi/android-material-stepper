@@ -58,6 +58,7 @@ public abstract class AbstractStepperType {
     final StepperLayout mStepperLayout;
 
     final SparseArray<VerificationError> mStepErrors = new SparseArray<>();
+    final SparseArray<Boolean> mStepEnterValidation = new SparseArray<>();
 
     public AbstractStepperType(StepperLayout stepperLayout) {
         this.mStepperLayout = stepperLayout;
@@ -77,6 +78,10 @@ public abstract class AbstractStepperType {
      */
     public void setError(int stepPosition, @Nullable VerificationError error) {
         mStepErrors.put(stepPosition, error);
+    }
+
+    public void setEnterValidation(int stepPoisition, Boolean enterValidation) {
+        mStepEnterValidation.put(stepPoisition, enterValidation);
     }
 
     /**
