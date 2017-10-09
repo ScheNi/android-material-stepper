@@ -248,6 +248,8 @@ public class StepperLayout extends LinearLayout implements TabsContainer.TabItem
 
     private boolean mShowBottomNavigation;
 
+    private boolean mValidateOnEnter;
+
     private int mTypeIdentifier = AbstractStepperType.PROGRESS_BAR;
 
     private int mFeedbackTypeMask = StepperFeedbackType.NONE;
@@ -378,14 +380,20 @@ public class StepperLayout extends LinearLayout implements TabsContainer.TabItem
         return mTabStepDividerWidth;
     }
 
+    public boolean hasValidationOnEnter() {
+        return mValidateOnEnter;
+    }
+
     @Override
     @UiThread
     public void onTabClicked(int position) {
         if (mTabNavigationEnabled) {
-            if (position > mCurrentStepPosition) {
+            if (position > mCurrentStepPosition && !mValidateOnEnter) {
                 onNext();
             } else if (position < mCurrentStepPosition) {
                 setCurrentStepPosition(position);
+            } else if(mValidateOnEnter) {
+                onToPosition(position);
             }
         }
     }
@@ -886,6 +894,8 @@ public class StepperLayout extends LinearLayout implements TabsContainer.TabItem
 
             mShowBottomNavigation = a.getBoolean(R.styleable.StepperLayout_ms_showBottomNavigation, true);
 
+            mValidateOnEnter = a.getBoolean(R.styleable.StepperLayout_ms_validateOnEnter, false);
+
             mShowErrorStateEnabled = a.getBoolean(R.styleable.StepperLayout_ms_showErrorState, false);
             mShowErrorStateEnabled = a.getBoolean(R.styleable.StepperLayout_ms_showErrorStateEnabled, mShowErrorStateEnabled);
 
@@ -956,6 +966,29 @@ public class StepperLayout extends LinearLayout implements TabsContainer.TabItem
         } else {
             onNextClickedCallback.goToNextStep();
         }
+    }
+
+    private void onToPosition(int position) {
+
+        Step step = findCurrentStep();
+
+        // First validate of current position is still valid
+        if (verifyCurrentStep(step)) {
+            invalidateCurrentPosition();
+            return;
+        }
+
+        setCurrentStepPosition(determineNextValidStepToPosition(mCurrentStepPosition, position));
+    }
+
+    private int determineNextValidStepToPosition(int currentPosition, int maxPosition) {
+        Boolean isValid = getAdapter().isStepValid(currentPosition);
+        if(isValid == null) return currentPosition;
+        if(isValid && maxPosition > currentPosition) {
+            return determineNextValidStepToPosition(++currentPosition, maxPosition);
+        }
+        if(!isValid) onError(new VerificationError(null));
+        return currentPosition;
     }
 
     private void invalidateCurrentPosition() {
