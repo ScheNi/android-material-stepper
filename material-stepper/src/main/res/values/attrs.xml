@@ -73,6 +73,8 @@ limitations under the License.
         <!-- Flag indicating whether step navigation is possible by clicking on the tabs directly. Only applicable for 'tabs' type. True by default. -->
         <attr name="ms_tabNavigationEnabled" format="boolean" />
 
+        <attr name="ms_validateOnEnter" format="boolean" />
+
         <!-- Type(s) of stepper feedback -->
         <attr name="ms_stepperFeedbackType">
             <flag name="none" value="1" />

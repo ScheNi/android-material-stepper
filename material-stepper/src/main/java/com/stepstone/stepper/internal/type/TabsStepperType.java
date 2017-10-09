@@ -71,7 +71,11 @@ public class TabsStepperType extends AbstractStepperType {
             mStepErrors.clear();
         }
 
-        mTabsContainer.updateSteps(newStepPosition, mStepErrors, mStepperLayout.isShowErrorMessageEnabled());
+        if(mStepperLayout.hasValidationOnEnter()) {
+            mTabsContainer.updateSteps(newStepPosition, mOnEnterValidatedSteps, mStepErrors);
+        } else {
+            mTabsContainer.updateSteps(newStepPosition, mStepErrors, mStepperLayout.isShowErrorMessageEnabled());
+        }
     }
 
     /**
@@ -83,7 +87,13 @@ public class TabsStepperType extends AbstractStepperType {
         List<StepViewModel> stepViewModels = new ArrayList<>();
         final int stepCount = stepAdapter.getCount();
         for (int i = 0; i < stepCount; i++) {
+            if(mStepperLayout.hasValidationOnEnter()) {
+                if(stepAdapter.isStepValid(i) != null) {
+                    mOnEnterValidatedSteps.put(i, stepAdapter.isStepValid(i));
+                }
+            }
             stepViewModels.add(stepAdapter.getViewModel(i));
+
         }
         mTabsContainer.setSteps(stepViewModels);
         mTabsContainer.setVisibility(stepCount > 1 ? View.VISIBLE : View.GONE);
