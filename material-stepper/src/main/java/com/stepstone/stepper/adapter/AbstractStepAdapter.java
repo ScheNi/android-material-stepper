@@ -23,6 +23,11 @@ public abstract class AbstractStepAdapter
         this.context = context;
     }
 
+    @Override
+    public Boolean isStepValid(int position) {
+        return null;
+    }
+
     /** {@inheritDoc} */
     @NonNull
     @Override

@@ -31,6 +31,15 @@ class SampleFragmentStepAdapter(fm: FragmentManager, context: Context) : Abstrac
         }
     }
 
+    override fun isStepValid(position: Int): Boolean? {
+        return when(position) {
+            0 -> true
+            1 -> null
+            2 -> true
+            else -> throw IllegalArgumentException("Unsupported position: " + position)
+        }
+    }
+
     override fun getCount(): Int {
         return 3
     }

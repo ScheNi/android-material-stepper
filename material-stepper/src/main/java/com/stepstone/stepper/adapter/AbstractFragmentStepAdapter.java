@@ -48,6 +48,11 @@ public abstract class AbstractFragmentStepAdapter
     }
 
     @Override
+    public Boolean isStepValid(int position) {
+        return null;
+    }
+
+    @Override
     public final Fragment getItem(@IntRange(from = 0) int position) {
         return (Fragment) createStep(position);
     }
