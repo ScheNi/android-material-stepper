@@ -14,6 +14,7 @@ import com.stepstone.stepper.viewmodel.StepViewModel;
  */
 public interface StepAdapter {
 
+    Boolean isStepValid(int position);
     /**
      * Create each step of the {@link com.stepstone.stepper.StepperLayout}.
      * @param position The position of the {@link PagerAdapter} to be used inside the {@link ViewPager}.
